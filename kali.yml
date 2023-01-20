@@ -1,0 +1,50 @@
+---
+- name: Provision Kali Linux
+  hosts: localhost
+  become: yes
+  
+  tasks:
+    - name: Download kali-archive-keyring package
+      get_url:
+        url: "http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2022.1_all.deb"
+        dest: "/tmp/kali-archive-keyring.deb"
+
+    - name: Install kali-archive-keyring package
+      package:
+        deb: "/tmp/kali-archive-keyring.deb"
+        force: yes
+      register: dpkg_result
+
+    - name: debug
+      debug:
+        var: dpkg_result
+
+    - name: Add Kali Linux repositories
+      apt_repository:
+        repo: "deb http://http.kali.org/kali kali-rolling main contrib non-free"
+        state: present
+
+    - name: Remove kali-archive-keyring package
+      file:
+        path: "/tmp/kali-archive-keyring.deb"
+        state: absent
+
+    - name: Update package index
+      apt:
+        update_cache: yes
+
+    - name: Install Kali Linux packages
+      apt:
+        name: ['kali-linux-core', 'kali-linux-default', 'kali-tools-exploitation','kali-tools-windows-resources', 'kali-tools-post-exploitation']
+        state: present
+     
+    - name: Install additional tools
+      apt:
+        name: ['nmap', 'bloodhound']
+        state: present
+
+    # - name: Upgrade all packages
+    #   apt:
+    #     upgrade: dist
+
+
