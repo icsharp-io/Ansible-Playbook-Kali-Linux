@@ -11,3 +11,5 @@ Run playbook
 ```
 ansible-playbook kali.yml
 ```
+
+TODO: add TerraForm for provisioning virtual machine (Debian), virtual network, subnet, nsg, load balancer with in/out bound nat rule.
